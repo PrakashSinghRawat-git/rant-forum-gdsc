@@ -10,7 +10,7 @@ const PostCard2 = ({ post }) => {
                 <h4 className="text-white-800 text-2xl font-bold mb-3">
                     {title}
                 </h4>
-                <p className="text-white-800 text-xl  line-clamp-5">
+                <p className="text-white-800 text-xl  line-clamp-4">
                     {description}
                 </p>
             </div>
