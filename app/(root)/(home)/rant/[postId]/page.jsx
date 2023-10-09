@@ -48,22 +48,28 @@ const Page = ({ params }) => {
             <SideBar />
             <div className="flex-col justify-start items-center w-full  container px-0 mx-auto sm:px-5 ">
                 <div className=" flex justify-center items-center post  min-w-screen mx-auto  px-6">
-                    {activePost && <PostViewer post={activePost} setActivePost={setActivePost}/>}
+                    {activePost && (
+                        <PostViewer
+                            post={activePost}
+                            setActivePost={setActivePost}
+                        />
+                    )}
                 </div>
-                <AddComment activePost={activePost} setComments={setComments}  />
+                <AddComment activePost={activePost} setComments={setComments} />
 
                 <button
                     className="text-red-500 font-bold text-3xl "
                     onClick={() => {
                         console.log("comments obj is: ", comments);
                     }}
-                >
-                  
-                </button>
+                ></button>
 
-                {comments && comments.map((comment) => (
-                    <Comment comment={comment} />
-                ))}
+                {comments &&
+                    comments.map((comment) => (
+                        <div key={comment.byRef} className="">
+                            <Comment comment={comment} />
+                        </div>
+                    ))}
             </div>
         </>
     );

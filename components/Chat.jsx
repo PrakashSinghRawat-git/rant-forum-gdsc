@@ -37,21 +37,24 @@ const Chat = ({ room }) => {
 
     useEffect(() => {
         // onsnapshot will help firebase to listen to changes in collection
-        const queryMessages = query(
-            messagesRef,
-            where("room", "==", room),
-            orderBy("createdAt")
-        );
-        const unsubscribe = onSnapshot(queryMessages, (snapshot) => {
-            let messages = [];
-            snapshot.forEach((doc) => {
-                messages.push({ ...doc.data(), id: doc.id });
+        const func = () => {
+            const queryMessages = query(
+                messagesRef,
+                where("room", "==", room),
+                orderBy("createdAt")
+            );
+            const unsubscribe = onSnapshot(queryMessages, (snapshot) => {
+                let messages = [];
+                snapshot.forEach((doc) => {
+                    messages.push({ ...doc.data(), id: doc.id });
+                });
+                setMessages(messages);
             });
-            setMessages(messages);
-        });
 
-        // clean up of useeffect - IMPORTANT fro subscriptions, timers, event listeners
-        return () => unsubscribe;
+            // clean up of useeffect - IMPORTANT fro subscriptions, timers, event listeners
+            return () => unsubscribe;
+        };
+        func();
     }, []);
 
     const handleSubmit = async (e) => {

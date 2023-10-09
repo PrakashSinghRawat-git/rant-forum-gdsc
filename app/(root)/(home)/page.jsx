@@ -28,23 +28,30 @@ export default function Home() {
     } = useStore();
 
     const auth = getAuth();
-    
-    useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                const userObj = {
-                    name: user.displayName,
-                    email: user.email,
-                    photoUrl: user.photoURL,
-                };
-                setCurrentUserObj(userObj);
 
-                console.log("currentUserObj updated onAuthStateChanged: ", currentUserObj);
-            } else {
-                // User is signed out
-                // ...
-            }
-        });
+    useEffect(() => {
+        const func = () => {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    const userObj = {
+                        name: user.displayName,
+                        email: user.email,
+                        photoUrl: user.photoURL,
+                    };
+                    setCurrentUserObj(userObj);
+
+                    console.log(
+                        "currentUserObj updated onAuthStateChanged: ",
+                        currentUserObj
+                    );
+                } else {
+                    // User is signed out
+                    // ...
+                }
+            });
+        };
+
+        func();
     }, []);
 
     useEffect(() => {
