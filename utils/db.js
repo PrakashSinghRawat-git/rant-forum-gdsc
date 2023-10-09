@@ -223,10 +223,11 @@ export const addLike = async (postId, email) => {
                 }, { merge: true });
 
                 console.log('new like added with id: ', postSnapshot.id)
-                return currentLikes + 1;
+                return true;
             }
         }else{
             console.log('post does not exist')
+            return false;
         }
     } catch (error) {
         console.log("error adding like...", error);

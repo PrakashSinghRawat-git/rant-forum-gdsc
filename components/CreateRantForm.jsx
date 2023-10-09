@@ -101,6 +101,7 @@ const UploadForm = () => {
                                     <textarea
                                         id="description"
                                         value={description}
+                                        name="description"
                                         minLength="5"
                                         required
                                         className="py-1 pl-3 overflow-y-auto h-24 border rounded border-gray-200 w-full resize-none focus:outline-none text-black-100"

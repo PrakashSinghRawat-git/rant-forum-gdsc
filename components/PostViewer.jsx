@@ -1,12 +1,10 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import {addLike} from "@/utils/db";
+import { addLike } from "@/utils/db";
 import useStore from "@/store/useStore";
 
-
 const PostViewer = ({ post, setActivePost }) => {
-    
     const {
         id,
         title,
@@ -18,12 +16,14 @@ const PostViewer = ({ post, setActivePost }) => {
         createdOn,
     } = post;
 
-    const {currentUserObj} = useStore();
+    const { currentUserObj } = useStore();
 
     const handleLikeButton = () => {
         addLike(id, currentUserObj.email).then((res) => {
-            const newPostObj = { ...post, likes: res };
-            setActivePost(newPostObj);
+            if (res == true) {
+                const newPostObj = { ...post, likes: res };
+                setActivePost(newPostObj);
+            }
         });
     };
     return (
@@ -39,14 +39,7 @@ const PostViewer = ({ post, setActivePost }) => {
                     <h4 className="text-white-800 text-2xl font-bold mb-3">
                         {title}
                     </h4>
-                    <p className="text-white-800 text-xl ">
-                        {description}
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Nulla non velit a erat fringilla malesuada. Suspendisse
-                        eu vestibulum libero. Fusce id bibendum turpis.
-                        Curabitur vehicula, elit ut dapibus feugiat, erat lorem
-                        tristique
-                    </p>
+                    <p className="text-white-800 text-xl ">{description}</p>
                 </div>
             </div>
             <div className="w-full flex flex-col items-start">
