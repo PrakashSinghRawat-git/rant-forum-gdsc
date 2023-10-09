@@ -3,6 +3,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { addLike } from "@/utils/db";
 import useStore from "@/store/useStore";
+import { toast } from "react-toastify";
+import Cookies from "universal-cookie";
 
 const PostViewer = ({ post, setActivePost }) => {
     const {
@@ -16,15 +18,24 @@ const PostViewer = ({ post, setActivePost }) => {
         createdOn,
     } = post;
 
-    const { currentUserObj } = useStore();
+    const { currentUserObj, isAuth } = useStore();
+    const cookies = new Cookies();
 
     const handleLikeButton = () => {
-        addLike(id, currentUserObj.email).then((res) => {
-            if (res == true) {
-                const newPostObj = { ...post, likes: res };
-                setActivePost(newPostObj);
-            }
-        });
+        if (cookies.get("auth-token")) {
+            addLike(id, currentUserObj.email).then((res) => {
+                if (res == true) {
+                    const newPostObj = { ...post, likes: likes + res };
+                    setActivePost(newPostObj);
+                    console.log("newPostObj" + newPostObj);
+                }
+            });
+            return;
+        } else {
+            console.log("not logged in");
+            toast.warning("please sign in to like the post");
+            return;
+        }
     };
     return (
         <div className="min-h-[300px] w-full lg:w-[57vw] flex flex-col justify-between items-start bg-black-300 rounded-lg border border-black-300 mb-6 py-2 px-4  text-white-800">

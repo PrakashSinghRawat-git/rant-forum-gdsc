@@ -8,10 +8,14 @@ import SideBar from "@/components/SideBar";
 import Comment from "@/components/Comment";
 import AddComment from "@/components/AddComment";
 import { fetchPostComments } from "@/utils/db";
+import CreateRantForm from "@/components/CreateRantForm";
+import useStore from "@/store/useStore";
 
 const Page = ({ params }) => {
     const [activePost, setActivePost] = useState(null);
     const [comments, setComments] = useState([]);
+
+    const { isCreateRant } = useStore();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -71,6 +75,7 @@ const Page = ({ params }) => {
                         </div>
                     ))}
             </div>
+            {isCreateRant && <CreateRantForm />}
         </>
     );
 };

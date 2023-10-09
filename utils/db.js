@@ -201,8 +201,8 @@ export const fetchPostComments = async (commentsRef) => {
 export const addLike = async (postId, email) => {
     // first checking if the user has already liked the post
     // we will check if the user's ID is present in the likedBy array field of the post document
-    console.log("post id is ", postId)
-    console.log("email is ", email)
+    console.log("post id is ", postId);
+    console.log("email is ", email);
 
     try {
         const postRef = doc(db, 'posts', postId);
@@ -223,11 +223,11 @@ export const addLike = async (postId, email) => {
                 }, { merge: true });
 
                 console.log('new like added with id: ', postSnapshot.id)
-                return true;
+                return 1;
             }
         }else{
             console.log('post does not exist')
-            return false;
+            return 0;
         }
     } catch (error) {
         console.log("error adding like...", error);

@@ -39,6 +39,7 @@ const UploadForm = () => {
                         "post successfully added with id: " + postRef.id
                     );
                     console.log("post successfully added...: ", postRef);
+                    setIsCreateRant(false);
                     setTitle("");
                     setDescription("");
 

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import useStore from "@/store/useStore";
 import Image from "next/image";
-
+import { handleSignOut , handleSignIn} from "@/utils/handlers";
 export default function SideBar() {
     let menuArray = [true, false, false];
     const [menu, setMenu] = useState(menuArray);
@@ -12,6 +12,8 @@ export default function SideBar() {
         setIsCreateRant,
         currentUserObj,
         setCurrentUserObj,
+        isAuth,
+        setIsAuth,
     } = useStore();
 
     const setMenuValue = (props) => {
@@ -136,7 +138,41 @@ export default function SideBar() {
                         </svg>
                         <p className="text-base leading-4 ">Create Rant</p>
                     </button>
-                    <button className="flex jusitfy-start items-center w-full  space-x-6 focus:outline-none text-white focus:text-indigo-400   rounded ">
+                    <button
+                        className={`flex jusitfy-start items-center space-x-6 w-full  focus:outline-none  ${
+                            isAuth
+                                ? "hover:text-red-400 font-semibold  text-red-500 rounded"
+                                : "hover:text-blue-400 text-blue-500"
+                        }`}
+                        onClick={
+                            isAuth
+                                ? () => {
+                                      handleSignOut({
+                                          isAuth,
+                                          setIsAuth,
+                                          setCurrentUserObj,
+                                      });
+                                  }
+                                : () =>
+                                      handleSignIn({
+                                          isAuth,
+                                          setIsAuth,
+                                          setCurrentUserObj,
+                                      })
+                        }
+                    >
+                        {/* <Image
+                            src="/signOut.png"
+                            alt="sign out"
+                            width={20}
+                            height={20}
+                        ></Image> */}
+                        <div className="w-[20px] h-[20px] rounded-full bg-red ml-1">&nbsp;</div>
+                        <p className="text-base leading-4 ">
+                            {isAuth ? "Sign Out" : "Sign In"}
+                        </p>
+                    </button>
+                    {/* <button className="flex jusitfy-start items-center w-full  space-x-6 focus:outline-none text-white focus:text-indigo-400   rounded ">
                         <svg
                             className="fill-stroke"
                             width={24}
@@ -161,9 +197,9 @@ export default function SideBar() {
                             />
                         </svg>
                         <p className="text-base leading-4 ">Users</p>
-                    </button>
+                    </button> */}
                 </div>
-                <div className="flex-col justify-between">
+                {/* <div className="flex-col justify-between">
                     <div className="flex flex-col justify-start items-center   px-6 border-b border-gray-600 w-full  ">
                         <button
                             onClick={() => setMenuValue(0)}
@@ -431,7 +467,7 @@ export default function SideBar() {
                             </button>
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
         </div>
     );
