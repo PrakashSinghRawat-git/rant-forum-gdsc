@@ -1,73 +1,59 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import { createPost } from "@/utils/actions";
+import { createPost } from "@/utils/db";
+import useStore from "@/store/useStore";
+import { fetchAllPosts } from "@/utils/db";
 
-const UploadForm = ({ isCreateRant, setIsCreateRant }) => {
+const UploadForm = () => {
     const [description, setDescription] = useState("");
     const [title, setTitle] = useState("");
     const [uploadingStarted, setUploadingStarted] = useState(false);
-
+    const { isCreateRant, setIsCreateRant, currentUserObj , postData, setPostData} = useStore();
     const printValues = () => {
         console.log("name: " + name);
 
         console.log("description: " + description);
     };
 
-    // uploadDocumentTOFirestor function was being called even before the changes in fileUrl take place
-    // im using useEffect while will trigger this function iff fileUrl has changed, it is not empty and we have started uploading
-    // useEffect(() => {
-    //     if (fileUrl.length > 0 && uploadingStarted === true) {
-    //         // Upload complete document to Firestore
-    //         console.log("fileURl befor adding doc to firestore:" + fileUrl);
-    //         uploadDocumentToFirestore({
-    //             name,
-    //             subject,
-    //             courseCode,
-    //             creator,
-    //             tags,
-    //             description,
-    //             selectedUnits,
-    //             fileUrl,
-    //         })
-    //             .then((docRef) => {
-    //                 toast.success(
-    //                     "Document successfully added with id: " + docRef.id
-    //                 );
 
-    //                 setUploadingStarted(false);
-    //             })
-    //             .catch((error) => {
-    //                 console.log("Error adding document: ", error);
-    //                 toast.error("Error adding document: ");
-    //             });
-    //     } else {
-    //         console.log(
-    //             "either fileUrl is empty or uploadingStarted is false: " +
-    //                 uploadingStarted +
-    //                 fileUrl
-    //         );
-    //         setUploadingStarted(false);
-    //     }
-    // }, [fileUrl]); // This useEffect runs whenever fileUrl changes
+
+          
+
 
     const handleCreateRant = async (e) => {
         e.preventDefault();
         try {
+            const { name, email } = currentUserObj;
+            console.log("userObject from store: ", currentUserObj);
             setUploadingStarted(true);
 
             createPost({
                 title,
                 description,
+                name,
+                email,
             })
                 .then((postRef) => {
                     toast.success(
                         "post successfully added with id: " + postRef.id
                     );
+                    console.log("post successfully added...: ", postRef);
                     setTitle("");
                     setDescription("");
 
                     setUploadingStarted(false);
+
+
+                    fetchAllPosts().then((data) => {
+                        setPostData(data);
+                        console.log("post array updated successfully..."+postData);
+                    }).catch((error) => {
+                        console.log('error updating post array...: ', error);
+                        toast.error('error updating post array...: ');
+                    })
+                   
+        
                 })
                 .catch((error) => {
                     console.log("Error adding post: ", error);
@@ -90,6 +76,7 @@ const UploadForm = ({ isCreateRant, setIsCreateRant }) => {
                 <div className="mx-auto container">
                     <div className="flex items-center justify-center h-full w-full">
                         <div className="bg-white-800 border border-black-100 rounded-md shadow fixed overflow-y-auto sm:h-auto w-10/12 md:w-8/12 lg:w-1/2 2xl:w-2/5">
+                            <p className="pl-5 md:px-10 pt-2">Create Rant...</p>
                             <div className="px-4 md:px-10 ">
                                 <form
                                     className="mt-3 shadow-3xl"

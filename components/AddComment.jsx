@@ -1,22 +1,47 @@
 "use client";
-import React, {useState} from "react";
-
-const AddComment = () => {
-    
+import React, { useState } from "react";
+import { addComment } from "@/utils/db";
+import { toast } from "react-toastify";
+import useStore from "@/store/useStore";
+import { handleSignIn } from "@/utils/handlers";
+const AddComment = ({ activePost, setComments }) => {
     const [comment, setComment] = useState("");
+    const { currentUserObj, isAuth, setIsAuth, setCurrentUserObj } = useStore();
+
     const commentData = {
-        byName: "test user",
-        byRef: "test user ref",
-        message: "this is test comment",
-        profilePic: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&faces=1&faceindex=1&facepad=2.5&w=500&h=500&q=80",
-        createdAt: "2021-08-28T11:46:01.000Z",
-    }
+        byName: currentUserObj?.name,
+        byRef: activePost?.id,
+        message: comment,
+        profilePic: currentUserObj.photoUrl,
+        createdAt: Date.now(),
+    };
 
+    const handleAddComment = async (e) => {
+        e.preventDefault();
+        if (!isAuth) {
+            toast.warning("please first sign in to rant...");
+            await handleSignIn({
+                isAuth,
+                setIsAuth,
+                setCurrentUserObj,
+            });
+            toast.info("now you can rant...");
+            return;
+        }
+        console.log("comment data is: ", commentData);
+        addComment(activePost.id, activePost.commentsRef, commentData).then(
+            (response) => {
+                if (response) {
+                    toast.success("ranted successfully...");
+                    setComment("");
+                    setComments(response);
+                    console.log("response is: ", response);
+                }
+                console.log(response);
+            }
+        );
+    };
 
-    const handleAddComment = (e)=>{
-        e.preventDefault()
-        console.log("comment is: ", comment);
-    }
     return (
         <>
             <div className="w-full flex-col items-center justify-center   pt-2 px-6 ">
@@ -88,7 +113,6 @@ const AddComment = () => {
                             rows={5}
                             className="block px-2 mr-4 py-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             placeholder="add your rant..."
-                            defaultValue={""}
                         />
                         <button
                             className="inline-flex justify-center p-2 text-blue-600 rounded-full cursor-pointer hover:bg-blue-100 dark:text-blue-500 dark:hover:bg-gray-600"

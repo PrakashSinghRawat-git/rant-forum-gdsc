@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
-const page = () => {
+const page = ({ comment }) => {
+    const { message, byName, byRef, profilePic, createdAt } = comment;
     return (
         <section className="">
             <div className="container lg:w-[61vw]  justify-center w-full mx-auto ">
@@ -11,18 +12,18 @@ const page = () => {
                             alt="Anonymous's avatar"
                             width={25}
                             height={25}
-                            src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&faces=1&faceindex=1&facepad=2.5&w=500&h=500&q=80"
+                            // src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&faces=1&faceindex=1&facepad=2.5&w=500&h=500&q=80"
+                            src={profilePic}
                         />
                         <div className="flex-col mt-1">
                             <div className="flex items-center flex-1 px-4 font-bold leading-tight">
-                                Anonymous
+                               {byName}
                                 <span className="ml-2 text-xs font-normal text-gray-500">
-                                    3 days ago
+                                    {createdAt}
                                 </span>
                             </div>
                             <div className="flex-1 px-2 ml-2 text-sm font-medium leading-loose text-gray-600">
-                                Very cool! I'll have to learn more about
-                                Tailwind.
+                                {message}
                             </div>
                             <button className="inline-flex items-center px-1 pt-2 ml-1 flex-column">
                                 <svg

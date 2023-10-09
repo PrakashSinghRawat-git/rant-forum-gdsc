@@ -1,14 +1,17 @@
 "use client";
-import { auth, provider } from "../app/config/firebase";
+import { auth, googleAuthProvider } from "../app/config/firebase";
 import { signInWithPopup } from "firebase/auth";
 import Cookies from "universal-cookie";
+import useStore from "@/store/useStore";
 
-const Auth = ({ setIsAuth}) => {
+
+const Auth = () => {
     const cookies = new Cookies();
+    const { isAuth, setIsAuth } = useStore();
 
     const signInWithGoogle = async () => {
         try {
-            const result = await signInWithPopup(auth, provider);
+            const result = await signInWithPopup(auth, googleAuthProvider);
 
             // result.user will have accesss token, refresh token and other user info
             // we refresh token to get new access token when it expires
@@ -16,7 +19,6 @@ const Auth = ({ setIsAuth}) => {
             cookies.set("auth-token", result.user.refreshToken);
             // console.log(result.user);
             setIsAuth(cookies.get("auth-token"));
-           
         } catch (err) {
             console.log("error: ", err);
         }

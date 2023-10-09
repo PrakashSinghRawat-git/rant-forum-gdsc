@@ -1,12 +1,23 @@
 "use client";
-import React, { useEffect, useState } from "react";
 import useStore from "@/store/useStore";
 import Link from "next/link";
 import Image from "next/image";
+import { handleSignIn, handleSignOut } from "@/utils/handlers";
 
 const Navbar = () => {
-    const [isSticky, setIsSticky] = useState(false);
-    const { showSidebar, setShowSidebar } = useStore();
+    const {
+        isAuth,
+        setIsAuth,
+        setIsCreateRant,
+        showSidebar,
+        setShowSidebar,
+        setCurrentUserObj,
+    } = useStore();
+
+    const createRantHandle = () => {
+        setIsCreateRant(true);
+       
+    };
 
     return (
         <nav className="flex-center top-0 z-50 w-full border-b-2 border-black-200 bg-gray-900 py-7 text-white ">
@@ -21,14 +32,52 @@ const Navbar = () => {
                 </Link>
 
                 <ul className="flex-center gap-x-3  md:gap-x-10">
-                    <li className="body-text text-gradient_blue-purple !font-bold  ">
-                        <Link href="/upload">Upload</Link>
+                    <li className="hover:border-b hover:border-black-800 transform duration-200 f body-text text-gradient_blue-purple !font-bold  ">
+                        <button
+                            onClick={
+                                isAuth
+                                    ? createRantHandle
+                                    : () =>
+                                          handleSignIn({
+                                              isAuth,
+                                              setIsAuth,
+                                              setCurrentUserObj,
+                                          })
+                            }
+                        >
+                            Create
+                        </button>
                     </li>
-                    <li className="body-text font-normal text-gradient_blue">
-                        <Link href="https://jsmastery.pro/masterclass">
-                            Masterclass
-                        </Link>
-                    </li>
+
+                    {isAuth ? (
+                        <li className=" font-normal text-gradient_blue hover:border-b hover:border-black-800 transform duration-200 ">
+                            <button
+                                onClick={() => {
+                                    handleSignOut({
+                                        isAuth,
+                                        setIsAuth,
+                                        setCurrentUserObj,
+                                    });
+                                }}
+                            >
+                                Sign Out
+                            </button>
+                        </li>
+                    ) : (
+                        <li className="hover:border-b hover:border-black-800 transform duration-200 font-normal text-gradient_blue ">
+                            <button
+                                onClick={() => {
+                                    handleSignIn({
+                                        isAuth,
+                                        setIsAuth,
+                                        setCurrentUserObj,
+                                    });
+                                }}
+                            >
+                                Sign In
+                            </button>
+                        </li>
+                    )}
                 </ul>
             </div>
             <div

@@ -2,10 +2,11 @@ import React from "react";
 import { useState, useRef, useEffect } from "react";
 import PostCard from "@/components/PostCard";
 import PostCard2 from "@/components/PostCard2";
-import { fetchAllPosts } from "@/utils/actions";
+import { fetchAllPosts } from "@/utils/db";
+import useStore from "@/store/useStore";
 
 const Content = () => {
-    const [postData, setPostData] = useState([]);
+    const {postData, setPostData} = useStore();
 
     useEffect(() => {
         const fetchData = async () => {

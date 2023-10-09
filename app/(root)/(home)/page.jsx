@@ -1,27 +1,51 @@
 "use client";
 import Auth from "@/components/Auth";
-import Cookies from "universal-cookie";
 import { useState, useRef, useEffect } from "react";
 import Chat from "@/components/Chat";
-import { signOut } from "firebase/auth";
 // import { auth, db } from "@/app/config/firebase";
 import { auth, db } from "@/app/config/firebase";
 import { getDocs, collection } from "firebase/firestore";
-import Content from "@/components/Content"
+import Content from "@/components/Content";
 import SideBar from "@/components/SideBar";
-import useStore from '@/store/useStore'
+import useStore from "@/store/useStore";
 import PostCard2 from "@/components/PostCard2";
+import CreateRantForm from "@/components/CreateRantForm";
+import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 
 export default function Home() {
-    const cookies = new Cookies();
     const messagesRef = collection(db, "messages");
 
     const [allRooms, setAllRooms] = useState([]);
-    const { showSidebar, setShowSidebar } = useStore();
+    const {
+        showSidebar,
+        setShowSidebar,
+        isAuth,
+        setIsAuth,
+        isCreateRant,
+        setIsCreateRant,
+        currentUserObj,
+        setCurrentUserObj,
+    } = useStore();
 
+    const auth = getAuth();
+    
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const userObj = {
+                    name: user.displayName,
+                    email: user.email,
+                    photoUrl: user.photoURL,
+                };
+                setCurrentUserObj(userObj);
 
-
-
+                console.log("currentUserObj updated onAuthStateChanged: ", currentUserObj);
+            } else {
+                // User is signed out
+                // ...
+            }
+        });
+    }, []);
 
     useEffect(() => {
         const countUniqueUsers = async () => {
@@ -46,7 +70,6 @@ export default function Home() {
     }, []);
 
     const [room, setRoom] = useState("");
-    const [isAuth, setIsAuth] = useState(cookies.get("auth-token"));
 
     // console.log(isAuth);
 
@@ -62,7 +85,7 @@ export default function Home() {
     // if (!isAuth) {
     //     return (
     //         <div>
-    //             <Auth setIsAuth={setIsAuth} />
+    //             <Auth />
     //         </div>
     //     );
     // }
@@ -70,11 +93,15 @@ export default function Home() {
         <div className="flex relative">
             <SideBar />
 
-            <div className={`${showSidebar ? "w-[100vw]" : ""} flex justify-center items-center w-full`}>
-
+            <div
+                className={`${
+                    showSidebar ? "w-[100vw]" : ""
+                } flex justify-center items-center w-full`}
+            >
                 <Content />
             </div>
 
-        </div >
+            {isCreateRant && <CreateRantForm />}
+        </div>
     );
 }
