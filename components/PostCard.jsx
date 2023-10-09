@@ -68,7 +68,7 @@ const PostCard2 = ({ post }) => {
                         href={`/rant/${id}`}
                         className="flex-center text-gradient_purple-blue body-semibold gap-1.5"
                     >
-                        let's rant
+                        let&apos;s rant
                         <Image
                             src="/arrow-blue.svg"
                             width={13}

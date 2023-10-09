@@ -9,7 +9,7 @@ import Comment from "@/components/Comment";
 import AddComment from "@/components/AddComment";
 import { fetchPostComments } from "@/utils/db";
 
-const Page = ({ params }) => {
+const RantPostPage = ({ params }) => {
     const [activePost, setActivePost] = useState(null);
     const [comments, setComments] = useState([]);
 
@@ -68,4 +68,4 @@ const Page = ({ params }) => {
         </>
     );
 };
-export default Page;
+export default RantPostPage;

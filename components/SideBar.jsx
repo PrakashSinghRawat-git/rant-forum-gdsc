@@ -1,10 +1,18 @@
 import React, { useState } from "react";
 import useStore from "@/store/useStore";
+import Image from "next/image";
 
 export default function SideBar() {
     let menuArray = [true, false, false];
     const [menu, setMenu] = useState(menuArray);
-    const { showSidebar, setShowSidebar , isCreateRant, setIsCreateRant, currentUserObj, setCurrentUserObj} = useStore();
+    const {
+        showSidebar,
+        setShowSidebar,
+        isCreateRant,
+        setIsCreateRant,
+        currentUserObj,
+        setCurrentUserObj,
+    } = useStore();
 
     const setMenuValue = (props) => {
         let newArr = [...menu];
@@ -23,21 +31,24 @@ export default function SideBar() {
                 showSidebar ? "visible" : "hidden"
             }  sidebar z-10  fixed md:black h-[100vh] mr-5`}
         >
-            
             <div
                 id="Main"
                 className={`${
                     showSidebar ? "translate-x-0" : "-translate-x-full"
                 } xl:rounded-r transform xl:translate-x-0 ease-in-out transition-transform duration-500 flex justify-start items-start h-full  sm:w-64 bg-gray-900 flex-col relative`}
             >
-               
                 <div className=" flex justify-between items-center w-full  my-5 border-b border-gray-600 pb-2">
                     <div className="flex justify-center items-center  space-x-2">
                         <div>
-                            <img
+                            <Image
                                 className="rounded-full"
-                                src={currentUserObj?.photoUrl || "https://i.imgur.com/6VBx3io.png" }
+                                src={
+                                    currentUserObj?.photoUrl ||
+                                    "https://i.imgur.com/6VBx3io.png"
+                                }
                                 alt="avatar"
+                                width={30}
+                                height={30}
                             />
                         </div>
                         <div className="flex justify-start flex-col items-start">
@@ -50,36 +61,36 @@ export default function SideBar() {
                         </div>
                     </div>
                     <button
-                    aria-label="close"
-                    id="close"
-                    onClick={() => setShowSidebar(false)}
-                    className={`${
-                        showSidebar ? "" : "hidden"
-                    } focus:outline-none focus:ring-2`}
-                >
-                    <svg
-                        width={30}
-                        height={30}
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
+                        aria-label="close"
+                        id="close"
+                        onClick={() => setShowSidebar(false)}
+                        className={`${
+                            showSidebar ? "" : "hidden"
+                        } focus:outline-none focus:ring-2`}
                     >
-                        <path
-                            d="M18 6L6 18"
-                            stroke="white"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        />
-                        <path
-                            d="M6 6L18 18"
-                            stroke="white"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        />
-                    </svg>
-                </button>
+                        <svg
+                            width={30}
+                            height={30}
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                d="M18 6L6 18"
+                                stroke="white"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                            <path
+                                d="M6 6L18 18"
+                                stroke="white"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                        </svg>
+                    </button>
                 </div>
                 <div className="mt-6 flex flex-col justify-start items-center  pl-4 w-full border-gray-600 border-b space-y-3 pb-5 ">
                     <button
@@ -422,7 +433,6 @@ export default function SideBar() {
                     </div>
                 </div>
             </div>
-
         </div>
     );
 }
