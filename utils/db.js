@@ -1,5 +1,5 @@
 import { db } from "@/app/config/firebase";
-import { collection, getDocs, getDoc, addDoc, setDoc, doc, query, where } from "@firebase/firestore";
+import { collection, getDocs, getDoc, addDoc, setDoc, updateDoc, doc, query, where } from "@firebase/firestore";
 import { formatDate } from "@/utils/helper"
 
 // getting user with given email and getting user document id
@@ -37,7 +37,7 @@ export const addUser = async ({
         const querySnapshot = await getDocs(q);
         if (querySnapshot.empty) {
             const newUser = {
-                name, email, photoUrl
+                name, email, photoUrl, anonymouseName: ""
             }
             console.log("query snap shot is ", querySnapshot)
             const userRef = await addDoc(collection(db, "users"), newUser);
@@ -54,6 +54,34 @@ export const addUser = async ({
         throw error; // Handle the error as needed
     }
 };
+
+// update user
+export const updateUser = async (email, fieldsToUpdate) => {
+    try {
+        // Query Firestore to find the user document with the specified email
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, where('email', '==', email));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+            // If a user with the specified email exists, update their fields
+            const userId = querySnapshot.docs[0].id;
+            const userRef = doc(db, 'users', userId);
+
+            // Use the updateDoc method to update specific fields of the user document
+            await updateDoc(userRef, fieldsToUpdate);
+
+            console.log('User updated successfully');
+        } else {
+            console.log('User not found');
+        }
+    } catch (error) {
+        console.error('Error updating user: ', error);
+        throw error;
+    }
+};
+
+
 export const fetchAllPosts = async () => {
 
     try {
@@ -225,7 +253,7 @@ export const addLike = async (postId, email) => {
                 console.log('new like added with id: ', postSnapshot.id)
                 return 1;
             }
-        }else{
+        } else {
             console.log('post does not exist')
             return 0;
         }
@@ -234,4 +262,5 @@ export const addLike = async (postId, email) => {
         throw error;
     }
 }
+
 

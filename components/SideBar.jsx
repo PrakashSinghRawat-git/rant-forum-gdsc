@@ -1,10 +1,16 @@
 import React, { useState } from "react";
 import useStore from "@/store/useStore";
 import Image from "next/image";
-import { handleSignOut , handleSignIn} from "@/utils/handlers";
+import { handleSignOut, handleSignIn } from "@/utils/handlers";
+import { toast } from "react-toastify";
+import { updateUser } from "@/utils/db";
+
 export default function SideBar() {
+    const [isAnonymousPopoverOpen, setIsAnonymousPopoverOpen] = useState(false);
+
     let menuArray = [true, false, false];
     const [menu, setMenu] = useState(menuArray);
+    const [anonymousName, setAnonymousName] = useState("");
     const {
         showSidebar,
         setShowSidebar,
@@ -27,152 +33,259 @@ export default function SideBar() {
         setIsCreateRant(true);
     };
 
+    const handleSetAnonymousName = async (e) => {
+        e.preventDefault();
+        if (!isAuth) {
+            toast.warning("please first sign in...");
+            await handleSignIn({
+                isAuth,
+                setIsAuth,
+                setCurrentUserObj,
+            });
+            return;
+        }
+        if (anonymousName === "") {
+            toast.warning("please first write something to rant...");
+            return;
+        }
+        // Update the anonymouseName field of a user document with the specified email
+        const userEmail = currentUserObj?.email;
+        const fieldsToUpdate = {
+            anonymousName: anonymousName,
+        };
+
+        console.log("Updating user: ", userEmail, fieldsToUpdate);
+        try {
+            await updateUser(userEmail, fieldsToUpdate);
+            toast.success("User updated successfully!");
+            setCurrentUserObj({
+                ...currentUserObj,
+                anonymousName: anonymousName,
+            });
+            setIsAnonymousPopoverOpen(false);
+            console.log("User updated successfully!" + currentUserObj);
+        } catch (error) {
+            toast.error("Error updating user: ");
+            console.error("Error updating user: ", error);
+        }
+    };
+
     return (
-        <div
-            className={`${
-                showSidebar ? "visible" : "hidden"
-            }  sidebar z-10  fixed md:black h-[100vh] mr-5`}
-        >
+        <>
             <div
-                id="Main"
                 className={`${
-                    showSidebar ? "translate-x-0" : "-translate-x-full"
-                } xl:rounded-r transform xl:translate-x-0 ease-in-out transition-transform duration-500 flex justify-start items-start h-full  sm:w-64 bg-gray-900 flex-col relative`}
+                    isAnonymousPopoverOpen ? "visible" : "hidden"
+                } absolute justify-center flex left-[50%] z-50 transform -translate-x-1/2 incognitoPopover bg-black-200 p-5 my-2`}
             >
-                <div className=" flex justify-between items-center w-full  my-5 border-b border-gray-600 pb-2">
-                    <div className="flex justify-center items-center  space-x-2">
-                        <div>
-                            <Image
-                                className="rounded-full"
-                                src={
-                                    currentUserObj?.photoUrl ||
-                                    "https://i.imgur.com/6VBx3io.png"
-                                }
-                                alt="avatar"
-                                width={30}
-                                height={30}
+                <form className="w-full max-w-lg">
+                    <div className="flex flex-wrap -mx-3 mb-6">
+                        <div className="w-full px-3">
+                            <label
+                                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                                htmlFor="grid-password pr-1"
+                            >
+                                Anonymous Name
+                            </label>
+                            <input
+                                className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                type="text"
+                                id="anonymousName"
+                                name="anonymousName"
+                                value={anonymousName}
+                                onChange={(e) => {
+                                    setAnonymousName(e.target.value);
+                                    console.log(anonymousName);
+                                }}
                             />
-                        </div>
-                        <div className="flex justify-start flex-col items-start">
-                            <p className="cursor-pointer text-sm leading-5 text-white">
-                                {currentUserObj?.name}
-                            </p>
-                            <p className="cursor-pointer text-xs leading-3 text-gray-300">
-                                {currentUserObj?.email}
+                            <p className="text-gray-600 text-xs italic">
+                                You will appear with this name in all posts,
+                                comments and messages even the past one.
                             </p>
                         </div>
                     </div>
+
+                    <div className="md:flex md:items-center">
+                        <div className="md:w-1/3">
+                            <button
+                                className="shadow bg-teal-400 hover:bg-teal-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
+                                onClick={handleSetAnonymousName}
+                            >
+                                Update
+                            </button>
+                        </div>
+                        <div className="md:w-2/3" />
+                    </div>
+                </form>
+            </div>
+            <div
+                className={`${
+                    showSidebar ? "visible" : "hidden"
+                }  sidebar z-10  fixed md:black h-[100vh] mr-5`}
+            >
+                <div
+                    id="Main"
+                    className={`${
+                        showSidebar ? "translate-x-0" : "-translate-x-full"
+                    } xl:rounded-r transform xl:translate-x-0 ease-in-out transition-transform duration-500 flex justify-start items-start h-full  sm:w-65 bg-gray-900 flex-col relative`}
+                >
+                    <div className=" flex justify-between items-center w-full border-b border-gray-mt-6   my-5  pb-2">
+                        <div className="flex justify-center items-center  space-x-2 pl-4">
+                            <div>
+                                <Image
+                                    className="rounded-full"
+                                    src={
+                                        currentUserObj?.anonymousName
+                                            ? "https://robohash.org/" +
+                                                  Math.random() +
+                                                  ".png" ||
+                                              "https://i.imgur.com/6VBx3io.png"
+                                            : currentUserObj?.photoUrl
+                                    }
+                                    alt="avatar"
+                                    width={30}
+                                    height={30}
+                                />
+                            </div>
+                            <div className="flex justify-start flex-col items-start">
+                                <p className="cursor-pointer text-sm leading-5 text-white">
+                                    {currentUserObj?.anonymousName ||
+                                        currentUserObj?.name}
+                                </p>
+                                {currentUserObj?.anonymousName && (
+                                    <p className="cursor-pointer text-xs leading-3 text-gray-300">
+                                        {currentUserObj?.email}
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+                        <button
+                            aria-label="close"
+                            id="close"
+                            onClick={() => setShowSidebar(false)}
+                            className={`${
+                                showSidebar ? "" : "hidden"
+                            } focus:outline-none focus:ring-2`}
+                        >
+                            <svg
+                                width={30}
+                                height={30}
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    d="M18 6L6 18"
+                                    stroke="white"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                />
+                                <path
+                                    d="M6 6L18 18"
+                                    stroke="white"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                />
+                            </svg>
+                        </button>
+                    </div>
                     <button
-                        aria-label="close"
-                        id="close"
-                        onClick={() => setShowSidebar(false)}
-                        className={`${
-                            showSidebar ? "" : "hidden"
-                        } focus:outline-none focus:ring-2`}
+                        onClick={() =>
+                            setIsAnonymousPopoverOpen(!isAnonymousPopoverOpen)
+                        }
+                        className="flex jusitfy-start items-center space-x-5 w-full  focus:outline-none  focus:text-indigo-400 cursor-pointer text-white rounded pl-4  border-b border-gray-mt-6 pb-2"
                     >
-                        <svg
+                        <Image
+                            src="/incognito.png"
                             width={30}
                             height={30}
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                d="M18 6L6 18"
-                                stroke="white"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            />
-                            <path
-                                d="M6 6L18 18"
-                                stroke="white"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            />
-                        </svg>
+                            alt="incognito"
+                            className="text-white"
+                        ></Image>
+                        <p>Become Anonymous</p>
                     </button>
-                </div>
-                <div className="mt-6 flex flex-col justify-start items-center  pl-4 w-full border-gray-600 border-b space-y-3 pb-5 ">
-                    <button
-                        className="flex jusitfy-start items-center space-x-6 w-full  focus:outline-none  focus:text-indigo-400  text-white rounded "
-                        onClick={createRantHandle}
-                    >
-                        <svg
-                            className="fill-stroke "
-                            width={24}
-                            height={24}
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
+                    <div className="mt-6 flex flex-col justify-start items-center  pl-4 w-full border-gray-600 border-b space-y-3 pb-5 ">
+                        <button
+                            className="flex jusitfy-start items-center space-x-6 w-full  focus:outline-none  focus:text-indigo-400  text-white rounded "
+                            onClick={createRantHandle}
                         >
-                            <path
-                                d="M9 4H5C4.44772 4 4 4.44772 4 5V9C4 9.55228 4.44772 10 5 10H9C9.55228 10 10 9.55228 10 9V5C10 4.44772 9.55228 4 9 4Z"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            />
-                            <path
-                                d="M19 4H15C14.4477 4 14 4.44772 14 5V9C14 9.55228 14.4477 10 15 10H19C19.5523 10 20 9.55228 20 9V5C20 4.44772 19.5523 4 19 4Z"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            />
-                            <path
-                                d="M9 14H5C4.44772 14 4 14.4477 4 15V19C4 19.5523 4.44772 20 5 20H9C9.55228 20 10 19.5523 10 19V15C10 14.4477 9.55228 14 9 14Z"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            />
-                            <path
-                                d="M19 14H15C14.4477 14 14 14.4477 14 15V19C14 19.5523 14.4477 20 15 20H19C19.5523 20 20 19.5523 20 19V15C20 14.4477 19.5523 14 19 14Z"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            />
-                        </svg>
-                        <p className="text-base leading-4 ">Create Rant</p>
-                    </button>
-                    <button
-                        className={`flex jusitfy-start items-center space-x-6 w-full  focus:outline-none  ${
-                            isAuth
-                                ? "hover:text-red-400 font-semibold  text-red-500 rounded"
-                                : "hover:text-blue-400 text-blue-500"
-                        }`}
-                        onClick={
-                            isAuth
-                                ? () => {
-                                      handleSignOut({
-                                          isAuth,
-                                          setIsAuth,
-                                          setCurrentUserObj,
-                                      });
-                                  }
-                                : () =>
-                                      handleSignIn({
-                                          isAuth,
-                                          setIsAuth,
-                                          setCurrentUserObj,
-                                      })
-                        }
-                    >
-                        {/* <Image
+                            <svg
+                                className="fill-stroke "
+                                width={24}
+                                height={24}
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    d="M9 4H5C4.44772 4 4 4.44772 4 5V9C4 9.55228 4.44772 10 5 10H9C9.55228 10 10 9.55228 10 9V5C10 4.44772 9.55228 4 9 4Z"
+                                    stroke="currentColor"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                />
+                                <path
+                                    d="M19 4H15C14.4477 4 14 4.44772 14 5V9C14 9.55228 14.4477 10 15 10H19C19.5523 10 20 9.55228 20 9V5C20 4.44772 19.5523 4 19 4Z"
+                                    stroke="currentColor"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                />
+                                <path
+                                    d="M9 14H5C4.44772 14 4 14.4477 4 15V19C4 19.5523 4.44772 20 5 20H9C9.55228 20 10 19.5523 10 19V15C10 14.4477 9.55228 14 9 14Z"
+                                    stroke="currentColor"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                />
+                                <path
+                                    d="M19 14H15C14.4477 14 14 14.4477 14 15V19C14 19.5523 14.4477 20 15 20H19C19.5523 20 20 19.5523 20 19V15C20 14.4477 19.5523 14 19 14Z"
+                                    stroke="currentColor"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                />
+                            </svg>
+                            <p className="text-base leading-4 ">Create Rant</p>
+                        </button>
+                        <button
+                            className={`flex jusitfy-start items-center space-x-6 w-full  focus:outline-none  ${
+                                isAuth
+                                    ? "hover:text-red-400 font-semibold  text-red-500 rounded"
+                                    : "hover:text-blue-400 text-blue-500"
+                            }`}
+                            onClick={
+                                isAuth
+                                    ? () => {
+                                          handleSignOut({
+                                              isAuth,
+                                              setIsAuth,
+                                              setCurrentUserObj,
+                                          });
+                                      }
+                                    : () =>
+                                          handleSignIn({
+                                              isAuth,
+                                              setIsAuth,
+                                              setCurrentUserObj,
+                                          })
+                            }
+                        >
+                            {/* <Image
                             src="/signOut.png"
                             alt="sign out"
                             width={20}
                             height={20}
                         ></Image> */}
-                        <div className="w-[20px] h-[20px] rounded-full bg-red ml-1">&nbsp;</div>
-                        <p className="text-base leading-4 ">
-                            {isAuth ? "Sign Out" : "Sign In"}
-                        </p>
-                    </button>
-                    {/* <button className="flex jusitfy-start items-center w-full  space-x-6 focus:outline-none text-white focus:text-indigo-400   rounded ">
+                            <div className="w-[20px] h-[20px] rounded-full bg-red ml-1">
+                                &nbsp;
+                            </div>
+                            <p className="text-base leading-4 ">
+                                {isAuth ? "Sign Out" : "Sign In"}
+                            </p>
+                        </button>
+                        {/* <button className="flex jusitfy-start items-center w-full  space-x-6 focus:outline-none text-white focus:text-indigo-400   rounded ">
                         <svg
                             className="fill-stroke"
                             width={24}
@@ -198,8 +311,8 @@ export default function SideBar() {
                         </svg>
                         <p className="text-base leading-4 ">Users</p>
                     </button> */}
-                </div>
-                {/* <div className="flex-col justify-between">
+                    </div>
+                    {/* <div className="flex-col justify-between">
                     <div className="flex flex-col justify-start items-center   px-6 border-b border-gray-600 w-full  ">
                         <button
                             onClick={() => setMenuValue(0)}
@@ -468,7 +581,8 @@ export default function SideBar() {
                         </div>
                     </div>
                 </div> */}
+                </div>
             </div>
-        </div>
+        </>
     );
 }

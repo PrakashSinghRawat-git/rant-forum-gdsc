@@ -18,11 +18,8 @@ export default function Home() {
     const [allRooms, setAllRooms] = useState([]);
     const {
         showSidebar,
-        setShowSidebar,
-        isAuth,
         setIsAuth,
         isCreateRant,
-        setIsCreateRant,
         currentUserObj,
         setCurrentUserObj,
     } = useStore();
@@ -37,13 +34,20 @@ export default function Home() {
                         name: user.displayName,
                         email: user.email,
                         photoUrl: user.photoURL,
+                        anonymousName: user.anonymousName,
                     };
-                    setCurrentUserObj(userObj);
+                    getUser(user.email).then((response) => {
+                        if (response) {
+                            console.log("user is: ", response.data());
+                            userObj.anonymousName = response.data().anonymousName;
+                            setCurrentUserObj(userObj);
 
-                    console.log(
-                        "currentUserObj updated onAuthStateChanged: ",
-                        currentUserObj
-                    );
+                            console.log(
+                                "currentUserObj updated onAuthStateChanged: ",
+                                currentUserObj
+                            );
+                        }
+                    });
                 } else {
                     // User is signed out
                     // ...
@@ -53,6 +57,7 @@ export default function Home() {
 
         func();
     }, []);
+
 
     useEffect(() => {
         const countUniqueUsers = async () => {

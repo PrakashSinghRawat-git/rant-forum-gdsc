@@ -17,6 +17,8 @@ export const handleSignIn = async ({ isAuth, setIsAuth, setCurrentUserObj }) => 
             name: result.user.displayName,
             email: result.user.email,
             photoUrl: result.user.photoURL,
+            anonymousName: result.user.anonymouseName
+
         };
         // result.user will have accesss token, refresh token and other user info
         // we refresh token to get new access token when it expires

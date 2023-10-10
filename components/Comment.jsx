@@ -1,7 +1,10 @@
 import React from "react";
 import Image from "next/image";
+import useStore from "@/store/useStore";
 const page = ({ comment }) => {
-    const { message, byName, byRef, profilePic, createdAt } = comment;
+    const { message, byName, byAnonymousName, byRef, profilePic, createdAt } =
+        comment;
+        const { currentUserObj } = useStore();
     return (
         <section className="">
             <div className="container lg:w-[61vw]  justify-center w-full mx-auto ">
@@ -12,12 +15,19 @@ const page = ({ comment }) => {
                             alt="Anonymous's avatar"
                             width={25}
                             height={25}
-                            // src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&faces=1&faceindex=1&facepad=2.5&w=500&h=500&q=80"
-                            src={profilePic}
+                            src={
+                                currentUserObj?.anonymousName
+                                    ? "https://robohash.org/" +
+                                          Math.random() +
+                                          ".png" ||
+                                      "https://i.imgur.com/6VBx3io.png"
+                                    : profilePic
+                            }
+                            // src={profilePic}
                         />
                         <div className="flex-col mt-1">
                             <div className="flex items-center flex-1 px-4 font-bold leading-tight">
-                               {byName}
+                                {byAnonymousName || byName}
                                 <span className="ml-2 text-xs font-normal text-gray-500">
                                     {createdAt}
                                 </span>

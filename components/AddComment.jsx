@@ -4,16 +4,18 @@ import { addComment } from "@/utils/db";
 import { toast } from "react-toastify";
 import useStore from "@/store/useStore";
 import { handleSignIn } from "@/utils/handlers";
+import {formatDate} from '@/utils/helper.js'
 const AddComment = ({ activePost, setComments }) => {
     const [comment, setComment] = useState("");
     const { currentUserObj, isAuth, setIsAuth, setCurrentUserObj } = useStore();
 
     const commentData = {
         byName: currentUserObj?.name,
+        byAnonymousName: currentUserObj?.anonymousName,
         byRef: activePost?.id,
         message: comment,
         profilePic: currentUserObj.photoUrl,
-        createdAt: Date.now(),
+        createdAt: formatDate(new Date()),
     };
 
     const handleAddComment = async (e) => {
@@ -26,6 +28,9 @@ const AddComment = ({ activePost, setComments }) => {
                 setCurrentUserObj,
             });
             toast.info("now you can rant...");
+        }
+        if (commentData.message === "") {
+            toast.warning("please first write something to rant...");
             return;
         }
         console.log("comment data is: ", commentData);

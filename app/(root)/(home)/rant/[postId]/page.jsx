@@ -1,21 +1,57 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import PostViewer from "@/components/PostViewer";
 import { usePathname, useSearchParams } from "next/navigation";
-import { fetchOnePost } from "@/utils/db";
+
+import PostViewer from "@/components/PostViewer";
 import SideBar from "@/components/SideBar";
 import Comment from "@/components/Comment";
 import AddComment from "@/components/AddComment";
-import { fetchPostComments } from "@/utils/db";
 import CreateRantForm from "@/components/CreateRantForm";
+
+import { fetchPostComments,fetchOnePost, getUser } from "@/utils/db";
 import useStore from "@/store/useStore";
+
+import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 
 const Page = ({ params }) => {
     const [activePost, setActivePost] = useState(null);
     const [comments, setComments] = useState([]);
+    const { isCreateRant, currentUserObj, setCurrentUserObj } = useStore();
 
-    const { isCreateRant } = useStore();
+    const auth = getAuth();
+
+    useEffect(() => {
+        const func = () => {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    const userObj = {
+                        name: user.displayName,
+                        email: user.email,
+                        photoUrl: user.photoURL,
+                        anonymousName: user.anonymousName,
+                    };
+                    getUser(user.email).then((response) => {
+                        if (response) {
+                            console.log("user is: ", response.data());
+                            userObj.anonymousName = response.data().anonymousName;
+                            setCurrentUserObj(userObj);
+
+                            console.log(
+                                "currentUserObj updated onAuthStateChanged: ",
+                                currentUserObj
+                            );
+                        }
+                    });
+                } else {
+                    // User is signed out
+                    // ...
+                }
+            });
+        };
+
+        func();
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
