@@ -17,7 +17,7 @@ export const handleSignIn = async ({ isAuth, setIsAuth, setCurrentUserObj }) => 
             name: result.user.displayName,
             email: result.user.email,
             photoUrl: result.user.photoURL,
-            anonymousName: result.user.anonymouseName
+          
 
         };
         // result.user will have accesss token, refresh token and other user info
@@ -29,8 +29,11 @@ export const handleSignIn = async ({ isAuth, setIsAuth, setCurrentUserObj }) => 
                 toast.success(
                     "User added successfully with id..." + res.id
                 );
+                console.log('user data after sign in is...'+ res)
 
                 userObj.id = res.id;
+                userObj.anonymousName = res.data().anonymousName;
+
                 cookies.set("auth-token", result.user.refreshToken);
                 cookies.set("user-object", userObj);
 
