@@ -16,21 +16,24 @@ const Navbar = () => {
 
     const createRantHandle = () => {
         setIsCreateRant(true);
-       
     };
 
     return (
         <nav className="flex-center top-0 z-50 w-full border-b-2 border-black-200 bg-gray-900 py-4 text-white ">
             <div className="flex-between mx-auto w-full max-w-screen-2xl px-6 xs:px-8 sm:px-16">
-                <Link href="/">
-                    <Image
-                        src="/psrlogo.png"
-                        alt="logo"
-                        width={40}
-                        height={40}
-                    />
-                </Link>
-
+                <div className="flex justify-left items-center">
+                    <Link href="/">
+                        <Image
+                            src="/psrlogo.png"
+                            alt="logo"
+                            width={40}
+                            height={40}
+                        />
+                    </Link>
+                    <Link href="/">
+                        <p className="hidden sm:block text-2xl pl-3 text-red-500 font-extrabold ">RantHub</p>
+                    </Link>
+                </div>
                 <ul className="flex-center gap-x-3  md:gap-x-10">
                     <li className="hover:border-b hover:border-black-800 transform duration-200  body-text text-gradient_blue-purple !font-bold  ">
                         <button
@@ -50,7 +53,7 @@ const Navbar = () => {
                     </li>
 
                     {isAuth ? (
-                        <li className=" font-normal text-gradient_blue hover:border-b hover:border-black-800 transform duration-200 ">
+                        <li className=" font-normal text-gradient_blue hover:border-b hover:border-black-800 transform duration-200 text-red-500">
                             <button
                                 onClick={() => {
                                     handleSignOut({

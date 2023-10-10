@@ -2,8 +2,9 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 const PostCard2 = ({ post }) => {
-    const { id, title, description, likes, comments, uploaderName, createdOn } =
+    const { id, title, description, likes, commentArray, uploaderName, createdOn } =
         post;
+        console.log('comment array is:'+commentArray)
     return (
         <div className="h-60 w-[400px] flex flex-col justify-between items-start bg-black-300 rounded-lg border border-blue-300 mb-6 py-2 px-4 text-white-800">
             <div>
@@ -36,7 +37,7 @@ const PostCard2 = ({ post }) => {
                             height={20}
                             alt="comment"
                         />
-                        <span className="px-1"> {comments}</span>
+                        <span className="px-1"> {commentArray?.length}</span>
                     </div>
 
                     <Link
