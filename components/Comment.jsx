@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import useStore from "@/store/useStore";
-const page = ({ comment }) => {
+const Page = ({ comment }) => {
     const { message, byName, byAnonymousName, byRef, profilePic, createdAt } =
         comment;
         const { currentUserObj } = useStore();
@@ -71,4 +71,4 @@ const page = ({ comment }) => {
     );
 };
 
-export default page;
+export default Page;
