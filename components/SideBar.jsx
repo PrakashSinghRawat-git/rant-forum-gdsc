@@ -134,12 +134,10 @@ export default function SideBar() {
                                 <Image
                                     className="rounded-full"
                                     src={
-                                        currentUserObj?.anonymousName
-                                            ? "https://robohash.org/" +
-                                                  Math.random() +
-                                                  ".png" ||
-                                              "https://i.imgur.com/6VBx3io.png"
-                                            : currentUserObj?.photoUrl
+                                        "https://robohash.org/" +
+                                            Math.random() +
+                                            ".png" ||
+                                        "https://i.imgur.com/6VBx3io.png"
                                     }
                                     alt="avatar"
                                     width={30}

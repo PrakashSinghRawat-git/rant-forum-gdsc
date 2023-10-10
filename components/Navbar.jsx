@@ -20,7 +20,7 @@ const Navbar = () => {
     };
     const handlePrint = () => {
         console.log("current user obj is: ", currentUserObj);
-    }
+    };
 
     return (
         <nav className="flex-center top-0 z-50 w-full border-b-2 border-black-200 bg-gray-900 py-4 text-white ">
@@ -35,10 +35,11 @@ const Navbar = () => {
                         />
                     </Link>
                     <Link href="/">
-                        <p className="hidden sm:block text-2xl pl-3 text-red-500 font-extrabold ">RantHub</p>
+                        <p className="hidden sm:block text-2xl pl-3 text-red-500 font-extrabold ">
+                            RantHub
+                        </p>
                     </Link>
                 </div>
-                <div className="text-red-500 text-2xl bg-sky-300" onClick={handlePrint}>print currentuserobj</div>
                 <ul className="flex-center gap-x-3  md:gap-x-10">
                     <li className="hover:border-b hover:border-black-800 transform duration-200  body-text text-gradient_blue-purple !font-bold  ">
                         <button
