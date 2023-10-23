@@ -1,14 +1,13 @@
 "use client";
 import Auth from "@/components/Auth";
 import { useState, useRef, useEffect } from "react";
-import Chat from "@/components/Chat";
-// import { auth, db } from "@/app/config/firebase";
+// import Chat from "@/components/Chat";
 import { auth, db } from "@/app/config/firebase";
 import { getDocs, collection } from "firebase/firestore";
 import Content from "@/components/Content";
 import SideBar from "@/components/SideBar";
 import useStore from "@/store/useStore";
-import PostCard2 from "@/components/PostCard2";
+// import PostCard2 from "@/components/PostCard2";
 import CreateRantForm from "@/components/CreateRantForm";
 import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 import { getVisitorCount, updateVisitorCount } from "@/utils/db";
