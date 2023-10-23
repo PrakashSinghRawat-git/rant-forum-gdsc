@@ -11,6 +11,7 @@ import useStore from "@/store/useStore";
 import PostCard2 from "@/components/PostCard2";
 import CreateRantForm from "@/components/CreateRantForm";
 import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
+import { getVisitorCount, updateVisitorCount } from "@/utils/db";
 
 export default function Home() {
     const messagesRef = collection(db, "messages");
@@ -22,6 +23,8 @@ export default function Home() {
         isCreateRant,
         currentUserObj,
         setCurrentUserObj,
+        visitorCount,
+        setVisitorCount,
     } = useStore();
 
     const auth = getAuth();
@@ -38,14 +41,15 @@ export default function Home() {
                     };
                     getUser(user.email).then((response) => {
                         if (response) {
-                            console.log("user is: ", response.data());
-                            userObj.anonymousName = response.data().anonymousName;
+                            // console.log("user is: ", response.data());
+                            userObj.anonymousName =
+                                response.data().anonymousName;
                             setCurrentUserObj(userObj);
 
-                            console.log(
-                                "currentUserObj updated onAuthStateChanged: ",
-                                currentUserObj
-                            );
+                            // console.log(
+                            //     "currentUserObj updated onAuthStateChanged: ",
+                            //     currentUserObj
+                            // );
                         }
                     });
                 } else {
@@ -58,6 +62,21 @@ export default function Home() {
         func();
     }, []);
 
+    useEffect(() => {
+        const updateVisitorsCountFunc = async () => {
+            const response = await updateVisitorCount();
+            console.log("visitor Count updated: ", response);
+        };
+        updateVisitorsCountFunc();
+        const getVisitorsFunc = async () => {
+            // const count = await getVisitorCount();
+            // setVisitorCount(count)
+            const response = await getVisitorCount();
+            setVisitorCount(response);
+            console.log("response is of visitor: ", response);
+        };
+        getVisitorsFunc();
+    }, []);
 
     useEffect(() => {
         const countUniqueUsers = async () => {
@@ -72,7 +91,7 @@ export default function Home() {
 
                 setAllRooms(Array.from(uniqueRooms)); // Convert Set to an array
 
-                console.log("allRooms", allRooms);
+                // console.log("allRooms", allRooms);
             } catch (error) {
                 console.error("Error counting unique users:", error);
             }
@@ -114,6 +133,15 @@ export default function Home() {
             </div>
 
             {isCreateRant && <CreateRantForm />}
+
+            {visitorCount && (
+                <div className="text-white-800 absolute right-2 text-sm border-b-2 mb-2 border-white">
+                    <span className="text-red-500 font-bold">
+                        {visitorCount}
+                    </span>
+                    &nbsp;people visited this site
+                </div>
+            )}
         </div>
     );
 }

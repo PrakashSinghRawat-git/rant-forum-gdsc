@@ -4,6 +4,8 @@ import Image from "next/image";
 import { handleSignOut, handleSignIn } from "@/utils/handlers";
 import { toast } from "react-toastify";
 import { updateUser } from "@/utils/db";
+import Link from "next/link";
+import Tooltip from "@/components/Tooltip";
 
 export default function SideBar() {
     const [isAnonymousPopoverOpen, setIsAnonymousPopoverOpen] = useState(false);
@@ -283,32 +285,26 @@ export default function SideBar() {
                                 {isAuth ? "Sign Out" : "Sign In"}
                             </p>
                         </button>
-                        {/* <button className="flex jusitfy-start items-center w-full  space-x-6 focus:outline-none text-white focus:text-indigo-400   rounded ">
-                        <svg
-                            className="fill-stroke"
-                            width={24}
-                            height={24}
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
+                    </div>
+                    <div className="mt-6 group relative flex flex-col justify-start items-center  pl-4 w-full border-gray-600 border-b space-y-3 pb-5 ">
+                        <Link
+                            href="https://prakash-rawat.vercel.app/"
+                            className="flex jusitfy-start items-center w-full  space-x-6 focus:outline-none text-white focus:text-indigo-400   rounded "
+                            target="_blank"
                         >
-                            <path
-                                d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            />
-                            <path
-                                d="M6 21V19C6 17.9391 6.42143 16.9217 7.17157 16.1716C7.92172 15.4214 8.93913 15 10 15H14C15.0609 15 16.0783 15.4214 16.8284 16.1716C17.5786 16.9217 18 17.9391 18 19V21"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            />
-                        </svg>
-                        <p className="text-base leading-4 ">Users</p>
-                    </button> */}
+                            <Image
+                                width={24}
+                                height={24}
+                                src="/psrlogo.png"
+                                alt="developer"
+                            ></Image>
+                            <p className="text-base leading-4 text-gradient_blue-purple hover:text-white-800">
+                                About Developer
+                            </p>
+                            <div className="absolute top-10 scale-0 group-hover:scale-100">
+                                <Tooltip />
+                            </div>
+                        </Link>
                     </div>
                     {/* <div className="flex-col justify-between">
                     <div className="flex flex-col justify-start items-center   px-6 border-b border-gray-600 w-full  ">

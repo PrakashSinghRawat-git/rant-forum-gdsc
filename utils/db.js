@@ -81,7 +81,6 @@ export const updateUser = async (email, fieldsToUpdate) => {
     }
 };
 
-
 export const fetchAllPosts = async () => {
 
     try {
@@ -118,12 +117,10 @@ export const fetchOnePost = async (postId) => {
     } catch (error) {
         console.error('Error fetching post by ID: ', error);
         return null; // You can handle errors appropriately in your application
-    }
+    }x
 };
 
-
 // function to upload document to firestore
-
 export const createPost = async ({
     title,
     description,
@@ -159,7 +156,6 @@ export const createPost = async ({
 };
 
 // function to create or update comments
-
 export const addComment = async (postId, commentsRef, commentData) => {
 
     // first check if comment section is available for given post
@@ -263,4 +259,30 @@ export const addLike = async (postId, email) => {
     }
 }
 
+export const updateVisitorCount = async ()=>{
+    const visitorsDocID = process.env.NEXT_PUBLIC_VISITORS_DOC_ID
+    try{
+        const visitorDocRef = doc(db, 'visitors', visitorsDocID);
+        const visitorSnapshot = await getDoc(visitorDocRef);
+        const oldCount = visitorSnapshot.data().visitors;
+        const newCount = oldCount + 1;
+        const res = await updateDoc(visitorDocRef, {visitors: newCount});
+        console.log("visitor count updated successfully",res);
+        return newCount;
+    }catch(error){
+        console.log("error getting visitor count...", error);
+        throw error;
+    }
+}
 
+export const getVisitorCount = async ()=>{
+    const visitorsDocID = process.env.NEXT_PUBLIC_VISITORS_DOC_ID
+    try{
+        const visitorDocRef = doc(db, 'visitors', visitorsDocID);
+        const visitorSnapshot = await getDoc(visitorDocRef);
+        return visitorSnapshot.data().visitors;
+    }catch(error){
+        console.log("error getting visitor count...", error);
+        throw error;
+    }
+}

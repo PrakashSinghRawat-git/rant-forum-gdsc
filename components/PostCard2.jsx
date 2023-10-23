@@ -6,7 +6,7 @@ const PostCard2 = ({ post }) => {
         post;
         console.log('comment array is:'+commentArray)
     return (
-        <div className="h-60 w-[400px] flex flex-col justify-between items-start bg-black-300 rounded-lg border border-blue-300 mb-6 py-2 px-4 text-white-800">
+        <div className="h-60 w-[350px] md:w-[400px] flex flex-col justify-between items-start bg-black-300 rounded-lg border border-blue-300 mb-6 py-2 px-4 text-white-800">
             <div>
                 <h4 className="text-white-800 text-2xl font-bold mb-3">
                     {title}

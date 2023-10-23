@@ -40,6 +40,7 @@ const Navbar = () => {
                         </p>
                     </Link>
                 </div>
+
                 <ul className="flex-center gap-x-3  md:gap-x-10">
                     <li className="hover:border-b hover:border-black-800 transform duration-200  body-text text-gradient_blue-purple !font-bold  ">
                         <button

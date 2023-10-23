@@ -37,6 +37,11 @@ const formStore = create((set) => ({
     setCurrentUserObj: (userObj) => {
         set({ currentUserObj: userObj });
     },
+
+    visitorCount: null,
+    setVisitorCount: (value) => {
+        set({ visitorCount: value });
+    },
 }));
 
 export default formStore;
